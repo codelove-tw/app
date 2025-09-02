@@ -1,30 +1,33 @@
 @extends('layout')
 
+@push('styles')
+    <link rel="stylesheet" href="/css/ideas-fancy.css">
+@endpush
+
 @section('content')
     <div class="container mt-4">
         <div class="row">
             <div class="col-12">
                 <!-- Back Button -->
                 <div class="mb-3">
-                    <a href="{{ route('ideas.index') }}" class="btn btn-outline-secondary">
+                    <a href="{{ route('ideas.index') }}" class="back-btn">
                         <i class="fas fa-arrow-left"></i> 返回列表
                     </a>
                 </div>
 
                 <!-- Idea Card -->
-                <div class="card mb-4">
+                <div class="card mb-4 fancy-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
-                            <h1 class="h3 mb-0">{{ $idea->title }}</h1>
+                            <h1 class="h3 mb-0 idea-title">{{ $idea->title }}</h1>
                             @auth
                                 @if ($idea->user_id === auth()->id())
                                     <div class="dropdown">
-                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
-                                            data-bs-toggle="dropdown">
+                                        <button class="btn dropdown-toggle-split" type="button" data-bs-toggle="dropdown">
                                             操作
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="{{ route('ideas.edit', $idea) }}">編輯</a></li>
+                                            <li><a class="dropdown-item" href="{{ route('ideas.edit', $idea) }}">✏️ 編輯</a></li>
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
@@ -34,7 +37,7 @@
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item text-danger"
-                                                        onclick="return confirm('確定要刪除這個點子嗎？')">刪除</button>
+                                                        onclick="return confirm('確定要刪除這個點子嗎？')">🗑️ 刪除</button>
                                                 </form>
                                             </li>
                                         </ul>
@@ -80,36 +83,38 @@
                 </div>
 
                 <!-- Comments Section -->
-                <div class="card">
+                <div class="card fancy-card">
                     <div class="card-header">
-                        <h5 class="mb-0">留言區</h5>
+                        <h5 class="mb-0">💬 留言區</h5>
                     </div>
                     <div class="card-body">
                         <!-- Comment Form -->
                         @auth
-                            <form method="POST" action="{{ route('ideas.comments.store', $idea) }}" class="mb-4">
-                                @csrf
-                                <div class="mb-3">
-                                    <textarea class="form-control autosize @error('content') is-invalid @enderror" name="content" rows="3"
-                                        placeholder="分享你的想法…" required>{{ old('content') }}</textarea>
-                                    @error('content')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-paper-plane"></i> 發表留言
-                                </button>
-                            </form>
+                            <div class="comment-form mb-4">
+                                <form method="POST" action="{{ route('ideas.comments.store', $idea) }}">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <textarea class="form-control autosize @error('content') is-invalid @enderror" name="content" rows="3"
+                                            placeholder="分享你的想法…" required>{{ old('content') }}</textarea>
+                                        @error('content')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <button type="submit" class="btn btn-fancy-primary">
+                                        <i class="fas fa-paper-plane"></i> 發表留言
+                                    </button>
+                                </form>
+                            </div>
                         @else
                             <div class="alert alert-info">
-                                <a href="{{ route('login') }}">登入</a> 後即可留言
+                                <a href="{{ route('login') }}" class="btn btn-fancy-primary btn-sm">登入</a> 後即可留言
                             </div>
                         @endauth
 
                         <!-- Comments List -->
                         <div id="comments-list">
                             @forelse($idea->comments as $comment)
-                                <div class="comment-item border-bottom pb-3 mb-3">
+                                <div class="comment-item mb-3">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-2">

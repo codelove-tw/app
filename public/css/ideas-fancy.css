@@ -1,0 +1,271 @@
+/* Ideas Module Fancy Styles */
+
+body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.fancy-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.fancy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.idea-card {
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+.idea-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--oc-violet-5), var(--oc-blue-5), var(--oc-cyan-5));
+}
+
+.idea-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.header-card {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6));
+    color: white;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(103, 126, 234, 0.3);
+}
+
+.header-card .text-muted {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.sort-search-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+}
+
+.btn-fancy-primary {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6));
+    border: none;
+    border-radius: 25px;
+    padding: 12px 25px;
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(103, 126, 234, 0.3);
+}
+
+.btn-fancy-primary:hover {
+    background: linear-gradient(135deg, var(--oc-violet-7), var(--oc-blue-7));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(103, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-fancy-outline {
+    background: transparent;
+    border: 2px solid var(--oc-gray-4);
+    border-radius: 25px;
+    padding: 6px 18px;
+    color: var(--oc-gray-7);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-fancy-outline:hover,
+.btn-fancy-outline.active {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6));
+    border-color: transparent;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(103, 126, 234, 0.3);
+}
+
+.btn-fancy-secondary {
+    border-radius: 25px;
+    padding: 12px 25px;
+    border: 2px solid var(--oc-gray-4);
+    background: transparent;
+    color: var(--oc-gray-7);
+    transition: all 0.3s ease;
+}
+
+.btn-fancy-secondary:hover {
+    background: var(--oc-gray-6);
+    border-color: var(--oc-gray-6);
+    color: white;
+}
+
+.search-input {
+    border: 2px solid var(--oc-gray-3);
+    border-radius: 25px;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.search-input:focus {
+    border-color: var(--oc-violet-5);
+    box-shadow: 0 0 0 0.2rem rgba(103, 126, 234, 0.25);
+    background: white;
+}
+
+.search-btn {
+    border: 2px solid var(--oc-gray-3);
+    border-left: none;
+    border-radius: 0 25px 25px 0;
+    background: var(--oc-gray-1);
+    color: var(--oc-gray-6);
+    transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6));
+    border-color: transparent;
+    color: white;
+}
+
+.vote-btn {
+    color: var(--oc-gray-6) !important;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+}
+
+.vote-btn:hover {
+    color: var(--oc-violet-6) !important;
+    transform: scale(1.1);
+}
+
+.vote-btn.voted {
+    color: var(--oc-violet-6) !important;
+}
+
+.idea-title {
+    color: var(--oc-gray-8);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.idea-title:hover {
+    color: var(--oc-violet-6);
+    text-decoration: none;
+}
+
+.card-footer {
+    background: linear-gradient(to right, var(--oc-gray-0), var(--oc-gray-1)) !important;
+    border-top: 1px solid var(--oc-gray-2);
+}
+
+.empty-state {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+    border: 2px solid var(--oc-gray-3);
+    border-radius: 15px;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control:focus {
+    border-color: var(--oc-violet-5);
+    box-shadow: 0 0 0 0.2rem rgba(103, 126, 234, 0.25);
+    background: white;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--oc-gray-8);
+    margin-bottom: 8px;
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6)) !important;
+    color: white;
+    border: none !important;
+    border-radius: 20px 20px 0 0 !important;
+}
+
+.comment-form {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid var(--oc-gray-2);
+}
+
+.comment-item {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid var(--oc-gray-1);
+    transition: all 0.3s ease;
+}
+
+.comment-item:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: var(--oc-gray-2);
+}
+
+.back-btn {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--oc-gray-3);
+    border-radius: 25px;
+    padding: 8px 16px;
+    color: var(--oc-gray-7);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background: white;
+    border-color: var(--oc-violet-5);
+    color: var(--oc-violet-6);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.dropdown-toggle-split {
+    border-radius: 25px;
+    border: 2px solid var(--oc-gray-3);
+    background: transparent;
+    color: var(--oc-gray-7);
+    transition: all 0.3s ease;
+}
+
+.dropdown-toggle-split:hover {
+    background: linear-gradient(135deg, var(--oc-violet-6), var(--oc-blue-6));
+    border-color: transparent;
+    color: white;
+}

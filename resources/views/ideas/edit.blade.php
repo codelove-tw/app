@@ -1,14 +1,18 @@
 @extends('layout')
 
+@push('styles')
+    <link rel="stylesheet" href="/css/ideas-fancy.css">
+@endpush
+
 @section('content')
     <div class="container mt-4">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
+                <div class="card fancy-card">
                     <div class="card-header">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">編輯點子</h4>
-                            <a href="{{ route('ideas.show', $idea) }}" class="btn btn-outline-secondary">
+                            <h4 class="mb-0">✏️ 編輯點子</h4>
+                            <a href="{{ route('ideas.show', $idea) }}" class="btn btn-light btn-sm">
                                 <i class="fas fa-arrow-left"></i> 返回
                             </a>
                         </div>
@@ -40,8 +44,8 @@
 
                             <!-- Submit Buttons -->
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('ideas.show', $idea) }}" class="btn btn-secondary">取消</a>
-                                <button type="submit" class="btn btn-primary">
+                                <a href="{{ route('ideas.show', $idea) }}" class="btn btn-fancy-secondary">取消</a>
+                                <button type="submit" class="btn btn-fancy-primary">
                                     <i class="fas fa-save"></i> 儲存變更
                                 </button>
                             </div>
@@ -51,17 +55,4 @@
             </div>
         </div>
     </div>
-
-    @push('styles')
-        <style>
-            .form-label {
-                font-weight: 600;
-            }
-
-            .card-header {
-                background-color: #f8f9fa;
-                border-bottom: 1px solid #dee2e6;
-            }
-        </style>
-    @endpush
 @endsection
