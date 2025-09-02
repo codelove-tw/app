@@ -87,10 +87,14 @@
                     <div class="card-body">
                         <!-- Comment Form -->
                         @auth
-                            <form id="comment-form" class="mb-4">
+                            <form method="POST" action="{{ route('ideas.comments.store', $idea) }}" class="mb-4">
                                 @csrf
                                 <div class="mb-3">
-                                    <textarea class="form-control autosize" name="content" rows="3" placeholder="分享你的想法…" required></textarea>
+                                    <textarea class="form-control autosize @error('content') is-invalid @enderror" name="content" rows="3"
+                                        placeholder="分享你的想法…" required>{{ old('content') }}</textarea>
+                                    @error('content')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-paper-plane"></i> 發表留言
@@ -105,7 +109,7 @@
                         <!-- Comments List -->
                         <div id="comments-list">
                             @forelse($idea->comments as $comment)
-                                <div class="comment-item border-bottom pb-3 mb-3" data-comment-id="{{ $comment->id }}">
+                                <div class="comment-item border-bottom pb-3 mb-3">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div class="flex-grow-1">
                                             <div class="d-flex align-items-center mb-2">
@@ -117,10 +121,15 @@
                                         </div>
                                         @auth
                                             @if ($comment->user_id === auth()->id())
-                                                <button class="btn btn-link btn-sm text-danger delete-comment-btn"
-                                                    data-comment-id="{{ $comment->id }}">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
+                                                <form method="POST" action="{{ route('ideas.comments.destroy', $comment) }}"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-link btn-sm text-danger"
+                                                        onclick="return confirm('確定要刪除這則留言嗎？')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
                                             @endif
                                         @endauth
                                     </div>
@@ -170,98 +179,6 @@
                         })
                         .fail(function() {
                             toastr.error('操作失敗，請稍後再試');
-                        });
-                });
-
-                // Comment form submission
-                $('#comment-form').on('submit', function(e) {
-                    e.preventDefault();
-
-                    const form = $(this);
-                    const content = form.find('textarea[name="content"]').val().trim();
-
-                    if (!content) {
-                        toastr.error('請輸入留言內容');
-                        return;
-                    }
-
-                    $.post(`/ideas/{{ $idea->id }}/comments`, {
-                            _token: $('meta[name="csrf-token"]').attr('content'),
-                            content: content
-                        })
-                        .done(function(response) {
-                            if (response.success) {
-                                // Hide no comments message
-                                $('#no-comments').hide();
-
-                                // Add new comment to list
-                                const commentHtml = `
-                    <div class="comment-item border-bottom pb-3 mb-3" data-comment-id="${response.comment.id}">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <div class="d-flex align-items-center mb-2">
-                                    <strong>${response.comment.user_name}</strong>
-                                    <small class="text-muted ms-2">${response.comment.created_at}</small>
-                                </div>
-                                <p class="mb-0">${response.comment.content.replace(/\n/g, '<br>')}</p>
-                            </div>
-                            <button class="btn btn-link btn-sm text-danger delete-comment-btn"
-                                    data-comment-id="${response.comment.id}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                                $('#comments-list').prepend(commentHtml);
-
-                                // Update comment count
-                                $('.comment-count').text(response.comment_count);
-
-                                // Clear form
-                                form.find('textarea').val('');
-                                autosize.update(form.find('textarea')[0]);
-
-                                toastr.success(response.message);
-                            }
-                        })
-                        .fail(function() {
-                            toastr.error('留言發表失敗，請稍後再試');
-                        });
-                });
-
-                // Delete comment
-                $(document).on('click', '.delete-comment-btn', function() {
-                    if (!confirm('確定要刪除這則留言嗎？')) {
-                        return;
-                    }
-
-                    const btn = $(this);
-                    const commentId = btn.data('comment-id');
-
-                    $.ajax({
-                            url: `/ideas/comments/${commentId}`,
-                            type: 'DELETE',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            }
-                        })
-                        .done(function(response) {
-                            if (response.success) {
-                                btn.closest('.comment-item').fadeOut(function() {
-                                    $(this).remove();
-
-                                    // Show no comments message if no comments left
-                                    if ($('.comment-item').length === 0) {
-                                        $('#no-comments').show();
-                                    }
-                                });
-
-                                toastr.success(response.message);
-                            }
-                        })
-                        .fail(function() {
-                            toastr.error('刪除失敗，請稍後再試');
                         });
                 });
             });
