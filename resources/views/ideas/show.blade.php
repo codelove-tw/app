@@ -1,0 +1,270 @@
+@extends('layout')
+
+@section('content')
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Back Button -->
+                <div class="mb-3">
+                    <a href="{{ route('ideas.index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> 返回列表
+                    </a>
+                </div>
+
+                <!-- Idea Card -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h1 class="h3 mb-0">{{ $idea->title }}</h1>
+                            @auth
+                                @if ($idea->user_id === auth()->id())
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown">
+                                            操作
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" href="{{ route('ideas.edit', $idea) }}">編輯</a></li>
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+                                            <li>
+                                                <form method="POST" action="{{ route('ideas.destroy', $idea) }}"
+                                                    class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger"
+                                                        onclick="return confirm('確定要刪除這個點子嗎？')">刪除</button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                @endif
+                            @endauth
+                        </div>
+
+                        @if ($idea->description)
+                            <div class="mb-3">
+                                <p class="text-muted mb-0">{!! nl2br(e($idea->description)) !!}</p>
+                            </div>
+                        @endif
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-3">
+                                <!-- Vote Button -->
+                                @auth
+                                    <button class="btn btn-link p-0 vote-btn" data-idea-id="{{ $idea->id }}"
+                                        data-voted="{{ $idea->hasVotedBy(auth()->user()) ? 'true' : 'false' }}">
+                                        <i
+                                            class="fas fa-thumbs-up {{ $idea->hasVotedBy(auth()->user()) ? 'text-primary' : 'text-muted' }}"></i>
+                                        <span class="vote-count">{{ $idea->vote_count }}</span>
+                                    </button>
+                                @else
+                                    <span class="text-muted">
+                                        <i class="fas fa-thumbs-up"></i>
+                                        <span>{{ $idea->vote_count }}</span>
+                                    </span>
+                                @endauth
+
+                                <!-- Comments Count -->
+                                <span class="text-muted">
+                                    <i class="fas fa-comment"></i>
+                                    <span class="comment-count">{{ $idea->comment_count }}</span>
+                                </span>
+                            </div>
+                            <small class="text-muted">
+                                by {{ $idea->user->name }} · {{ $idea->created_at->diffForHumans() }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">留言區</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Comment Form -->
+                        @auth
+                            <form id="comment-form" class="mb-4">
+                                @csrf
+                                <div class="mb-3">
+                                    <textarea class="form-control autosize" name="content" rows="3" placeholder="分享你的想法…" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-paper-plane"></i> 發表留言
+                                </button>
+                            </form>
+                        @else
+                            <div class="alert alert-info">
+                                <a href="{{ route('login') }}">登入</a> 後即可留言
+                            </div>
+                        @endauth
+
+                        <!-- Comments List -->
+                        <div id="comments-list">
+                            @forelse($idea->comments as $comment)
+                                <div class="comment-item border-bottom pb-3 mb-3" data-comment-id="{{ $comment->id }}">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <strong>{{ $comment->user->name }}</strong>
+                                                <small
+                                                    class="text-muted ms-2">{{ $comment->created_at->diffForHumans() }}</small>
+                                            </div>
+                                            <p class="mb-0">{!! nl2br(e($comment->content)) !!}</p>
+                                        </div>
+                                        @auth
+                                            @if ($comment->user_id === auth()->id())
+                                                <button class="btn btn-link btn-sm text-danger delete-comment-btn"
+                                                    data-comment-id="{{ $comment->id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        @endauth
+                                    </div>
+                                </div>
+                            @empty
+                                <div id="no-comments" class="text-center text-muted py-3">
+                                    還沒有留言，來當第一個留言的人吧！
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script>
+            $(document).ready(function() {
+                // Vote toggle functionality
+                $('.vote-btn').on('click', function(e) {
+                    e.preventDefault();
+
+                    const btn = $(this);
+                    const ideaId = btn.data('idea-id');
+
+                    $.post(`/ideas/${ideaId}/vote`, {
+                            _token: $('meta[name="csrf-token"]').attr('content')
+                        })
+                        .done(function(response) {
+                            if (response.success) {
+                                // Update vote count
+                                btn.find('.vote-count').text(response.vote_count);
+
+                                // Update button state
+                                const icon = btn.find('i');
+                                if (response.voted) {
+                                    icon.removeClass('text-muted').addClass('text-primary');
+                                    btn.data('voted', 'true');
+                                } else {
+                                    icon.removeClass('text-primary').addClass('text-muted');
+                                    btn.data('voted', 'false');
+                                }
+
+                                toastr.success(response.message);
+                            }
+                        })
+                        .fail(function() {
+                            toastr.error('操作失敗，請稍後再試');
+                        });
+                });
+
+                // Comment form submission
+                $('#comment-form').on('submit', function(e) {
+                    e.preventDefault();
+
+                    const form = $(this);
+                    const content = form.find('textarea[name="content"]').val().trim();
+
+                    if (!content) {
+                        toastr.error('請輸入留言內容');
+                        return;
+                    }
+
+                    $.post(`/ideas/{{ $idea->id }}/comments`, {
+                            _token: $('meta[name="csrf-token"]').attr('content'),
+                            content: content
+                        })
+                        .done(function(response) {
+                            if (response.success) {
+                                // Hide no comments message
+                                $('#no-comments').hide();
+
+                                // Add new comment to list
+                                const commentHtml = `
+                    <div class="comment-item border-bottom pb-3 mb-3" data-comment-id="${response.comment.id}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex align-items-center mb-2">
+                                    <strong>${response.comment.user_name}</strong>
+                                    <small class="text-muted ms-2">${response.comment.created_at}</small>
+                                </div>
+                                <p class="mb-0">${response.comment.content.replace(/\n/g, '<br>')}</p>
+                            </div>
+                            <button class="btn btn-link btn-sm text-danger delete-comment-btn"
+                                    data-comment-id="${response.comment.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                                $('#comments-list').prepend(commentHtml);
+
+                                // Update comment count
+                                $('.comment-count').text(response.comment_count);
+
+                                // Clear form
+                                form.find('textarea').val('');
+                                autosize.update(form.find('textarea')[0]);
+
+                                toastr.success(response.message);
+                            }
+                        })
+                        .fail(function() {
+                            toastr.error('留言發表失敗，請稍後再試');
+                        });
+                });
+
+                // Delete comment
+                $(document).on('click', '.delete-comment-btn', function() {
+                    if (!confirm('確定要刪除這則留言嗎？')) {
+                        return;
+                    }
+
+                    const btn = $(this);
+                    const commentId = btn.data('comment-id');
+
+                    $.ajax({
+                            url: `/ideas/comments/${commentId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            }
+                        })
+                        .done(function(response) {
+                            if (response.success) {
+                                btn.closest('.comment-item').fadeOut(function() {
+                                    $(this).remove();
+
+                                    // Show no comments message if no comments left
+                                    if ($('.comment-item').length === 0) {
+                                        $('#no-comments').show();
+                                    }
+                                });
+
+                                toastr.success(response.message);
+                            }
+                        })
+                        .fail(function() {
+                            toastr.error('刪除失敗，請稍後再試');
+                        });
+                });
+            });
+        </script>
+    @endpush
+@endsection

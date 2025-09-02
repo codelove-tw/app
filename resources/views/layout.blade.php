@@ -36,6 +36,7 @@
     <script src="/vendor/autosize@3.0.20/js/autosize.min.js"></script>
 
     @yield('head')
+    @stack('styles')
 </head>
 
 <body>
@@ -140,6 +141,8 @@
             border-color: #8c8c8c;
         }
     </style>
+
+    @stack('scripts')
 </body>
 
 </html>
