@@ -67,8 +67,14 @@
 
             autosize(document.querySelectorAll('.autosize'));
 
-            $('form').submit(function() {
+            $('form').submit(function(e) {
                 const form = $(this);
+
+                // 如果表單有 'ajax-form' 類別，跳過防重複提交邏輯
+                if (form.hasClass('ajax-form')) {
+                    return;
+                }
+
                 const submitButtons = form.find('input[type=submit], button[type=submit]');
 
                 if (submitButtons.length > 0) {

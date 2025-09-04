@@ -74,7 +74,7 @@
                         <h5 class="mb-0">貼上 ads.txt / Paste ads.txt</h5>
                     </div>
                     <div class="card-body">
-                        <form id="deduplicateForm">
+                        <form id="deduplicateForm" class="ajax-form">
                             @csrf
                             <div class="mb-3">
                                 <textarea id="adstxtContent" name="content" class="form-control input-textarea"
@@ -235,7 +235,7 @@
 
             } catch (err) {
                 console.error('複製失敗:', err);
-                
+
                 // 如果都失敗了，提供手動複製的提示
                 resultTextarea.select();
                 resultTextarea.setSelectionRange(0, resultTextarea.value.length);
