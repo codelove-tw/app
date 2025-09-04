@@ -206,13 +206,20 @@
             }
         });
 
-        copyBtn.addEventListener('click', function() {
+        copyBtn.addEventListener('click', async function() {
             const resultTextarea = document.getElementById('resultContent');
-            resultTextarea.select();
-            resultTextarea.setSelectionRange(0, 99999); // For mobile devices
+            const textToCopy = resultTextarea.value;
 
             try {
-                document.execCommand('copy');
+                // 使用現代的 Clipboard API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(textToCopy);
+                } else {
+                    // 備用方案：使用傳統方法
+                    resultTextarea.select();
+                    resultTextarea.setSelectionRange(0, resultTextarea.value.length);
+                    document.execCommand('copy');
+                }
 
                 // 暫時更改按鈕文字
                 const originalText = copyBtn.textContent;
@@ -228,7 +235,11 @@
 
             } catch (err) {
                 console.error('複製失敗:', err);
-                alert('複製失敗，請手動選取文字複製。');
+                
+                // 如果都失敗了，提供手動複製的提示
+                resultTextarea.select();
+                resultTextarea.setSelectionRange(0, resultTextarea.value.length);
+                alert('自動複製失敗，文字已選取，請按 Ctrl+C (或 Cmd+C) 手動複製。');
             }
         });
 
