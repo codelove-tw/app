@@ -52,4 +52,12 @@ Route::prefix('ideas')->name('ideas.')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy')->middleware('auth');
 });
 
+// AdsTxt routes
+use App\Http\Controllers\AdsTxt\AdsTxtMergeController;
+
+Route::prefix('adstxt-merge')->name('adstxt-merge.')->group(function () {
+    Route::get('/', [AdsTxtMergeController::class, 'index'])->name('index');
+    Route::post('/deduplicate', [AdsTxtMergeController::class, 'deduplicate'])->name('deduplicate');
+});
+
 require __DIR__.'/admin.php';

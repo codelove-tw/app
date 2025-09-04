@@ -11,7 +11,10 @@
                     <a class="nav-link" href="/">首頁</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ route('ideas.index') }}">荒唐點子</a>
+                    <a class="nav-link" href="{{ route('ideas.index') }}">荒唐點子大投稿</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('adstxt-merge.index') }}">AdsTxt 去重複工具</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
